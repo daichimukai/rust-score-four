@@ -1,0 +1,6 @@
+[package]
+name = "score-four"
+version = "0.0.1"
+authors = ["Daichi Mukai <mukai.daichi.37e@kyoto-u.jp>"]
+
+[dependencies]
