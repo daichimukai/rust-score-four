@@ -11,8 +11,8 @@ pub enum Color {
 pub const NUM_COLORS: usize = 2;
 
 impl Color {
-    pub fn to_index(&self) -> usize {
-        *self as usize
+    pub fn to_index(self) -> usize {
+        self as usize
     }
 }
 

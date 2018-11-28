@@ -1,4 +1,4 @@
-use std::ops::{BitAnd, BitOr, BitAndAssign, BitOrAssign, Not};
+use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, Not};
 
 /// A bit-board for Score Four
 ///
@@ -26,7 +26,9 @@ pub struct BitBoard(pub u64);
 pub const EMPTY: BitBoard = BitBoard(0);
 
 macro_rules! from_each_level {
-    ($arr: expr) => ($arr[0] | ($arr[1] << 16) | ($arr[2] << 32) | ($arr[3] << 48))
+    ($arr: expr) => {
+        $arr[0] | ($arr[1] << 16) | ($arr[2] << 32) | ($arr[3] << 48)
+    };
 }
 
 impl BitBoard {
@@ -46,7 +48,7 @@ impl BitBoard {
     /// ```
     ///
     pub fn line_at_pos(_pos: u8) -> BitBoard {
-        let pos = _pos as u64;
+        let pos = u64::from(_pos);
         BitBoard(pos | (pos << 16) | (pos << 32) | (pos << 48))
     }
 
@@ -60,8 +62,8 @@ impl BitBoard {
     /// assert_eq!(bb.get_level_at(1), 4);
     /// ```
     ///
-    pub fn get_level_at(&self, pos: u8) -> u8 {
-        (*self & BitBoard::line_at_pos(pos)).0.count_ones() as u8
+    pub fn get_level_at(self, pos: u8) -> u8 {
+        (self & BitBoard::line_at_pos(pos)).0.count_ones() as u8
     }
 
     /// Count the numbers of beads in this bitboard
@@ -74,7 +76,7 @@ impl BitBoard {
     /// assert_eq!(bb.popcnt(), 64);
     /// ```
     ///
-    pub fn popcnt(&self) -> u32 {
+    pub fn popcnt(self) -> u32 {
         self.0.count_ones()
     }
 
@@ -88,7 +90,7 @@ impl BitBoard {
     /// assert!(bb.lined());
     /// ```
     ///
-    pub fn lined(&self) -> bool {
+    pub fn lined(self) -> bool {
         self.row_lined() || self.column_lined() || self.level_lined() || self.diagonal_lined()
     }
 
@@ -106,12 +108,12 @@ impl BitBoard {
     /// assert_eq!(bb.row_lined(), false);
     /// ```
     ///
-    pub fn row_lined(&self) -> bool {
+    pub fn row_lined(self) -> bool {
         for level in 0..4 {
             for column in 0..4 {
                 let mask = BitBoard(0b1111 << (4 * column + 16 * level));
-                if mask == (*self & mask) {
-                    return true
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
@@ -133,12 +135,12 @@ impl BitBoard {
     /// assert_eq!(bb.column_lined(), false);
     /// ```
     ///
-    pub fn column_lined(&self) -> bool {
+    pub fn column_lined(self) -> bool {
         for level in 0..4 {
             for row in 0..4 {
                 let mask = BitBoard(0b0001_0001_0001_0001 << (row + 16 * level));
-                if mask == (*self & mask) {
-                    return true
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
@@ -160,13 +162,13 @@ impl BitBoard {
     /// assert_eq!(bb.level_lined(), false);
     /// ```
     ///
-    pub fn level_lined(&self) -> bool {
+    pub fn level_lined(self) -> bool {
         let line_tmpl = 0b0001 + (0b0001 << 16) + (0b0001 << 32) + (0b0001 << 48);
         for row in 0..4 {
             for column in 0..4 {
                 let mask = BitBoard(line_tmpl << (row + 4 * column));
-                if mask == (*self & mask) {
-                    return true
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
@@ -175,39 +177,59 @@ impl BitBoard {
     }
 
     /// Check there exists a lined diagonal or not
-    fn diagonal_2d_lined(&self) -> bool {
-        let line_tmpl = [0b1000_0100_0010_0001, 0b0001_0010_0100_1000];
+    fn diagonal_2d_lined(self) -> bool {
+        let line_tmpl: [u64; 2] = [0b1000_0100_0010_0001, 0b0001_0010_0100_1000];
         for level in 0..4 {
-            for i in 0..2 {
-                let mask = BitBoard(line_tmpl[i] << (16 * level));
-                if mask == (*self & mask) {
-                    return true
+            for _mask in line_tmpl.iter() {
+                let mask = BitBoard(_mask << (16 * level));
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
 
-        let line_tmpl = [from_each_level!([0b0000_0000_0000_0001, 0b0000_0000_0000_0010,
-                                           0b0000_0000_0000_0100, 0b0000_0000_0000_1000]),
-                         from_each_level!([0b0000_0000_0000_1000, 0b0000_0000_0000_0100,
-                                           0b0000_0000_0000_0010, 0b0000_0000_0000_0001])];
+        let line_tmpl: [u64; 2] = [
+            from_each_level!([
+                0b0000_0000_0000_0001,
+                0b0000_0000_0000_0010,
+                0b0000_0000_0000_0100,
+                0b0000_0000_0000_1000
+            ]),
+            from_each_level!([
+                0b0000_0000_0000_1000,
+                0b0000_0000_0000_0100,
+                0b0000_0000_0000_0010,
+                0b0000_0000_0000_0001
+            ]),
+        ];
         for row in 0..4 {
-            for i in 0..2 {
-                let mask = BitBoard(line_tmpl[i] << (4 * row));
-                if mask == (*self & mask) {
-                    return true
+            for _mask in line_tmpl.iter() {
+                let mask = BitBoard(_mask << (4 * row));
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
 
-        let line_tmpl = [from_each_level!([0b0000_0000_0000_0001, 0b0000_0000_0001_0000,
-                                           0b0000_0001_0000_0000, 0b0001_0000_0000_0000]),
-                         from_each_level!([0b0001_0000_0000_0000, 0b0000_0001_0000_0000,
-                                           0b0000_0000_0001_0000, 0b0000_0000_0000_0001])];
+        let line_tmpl: [u64; 2] = [
+            from_each_level!([
+                0b0000_0000_0000_0001,
+                0b0000_0000_0001_0000,
+                0b0000_0001_0000_0000,
+                0b0001_0000_0000_0000
+            ]),
+            from_each_level!([
+                0b0001_0000_0000_0000,
+                0b0000_0001_0000_0000,
+                0b0000_0000_0001_0000,
+                0b0000_0000_0000_0001
+            ]),
+        ];
         for column in 0..4 {
-            for i in 0..2 {
-                let mask = BitBoard(line_tmpl[i] << column);
-                if mask == (*self & mask) {
-                    return true
+            for _mask in line_tmpl.iter() {
+                let mask = BitBoard(_mask << column);
+                if mask == (self & mask) {
+                    return true;
                 }
             }
         }
@@ -216,19 +238,37 @@ impl BitBoard {
     }
 
     /// Check there exists a lined diagonal or not
-    fn diagonal_3d_lined(&self) -> bool {
-        let line_tmpl = [from_each_level!([0b0000_0000_0000_0001, 0b0000_0000_0010_0000,
-                                           0b0000_0100_0000_0000, 0b1000_0000_0000_0000]),
-                         from_each_level!([0b1000_0000_0000_0000, 0b0000_0100_0000_0000,
-                                           0b0000_0000_0010_0000, 0b0000_0000_0000_0001]),
-                         from_each_level!([0b0000_0000_0000_1000, 0b0000_0000_0100_0000,
-                                           0b0000_0010_0000_0000, 0b0001_0000_0000_0000]),
-                         from_each_level!([0b0001_0000_0000_0000, 0b0000_0010_0000_0000,
-                                           0b0000_0000_0100_0000, 0b0000_0000_0000_1000]),];
+    fn diagonal_3d_lined(self) -> bool {
+        let line_tmpl = [
+            from_each_level!([
+                0b0000_0000_0000_0001,
+                0b0000_0000_0010_0000,
+                0b0000_0100_0000_0000,
+                0b1000_0000_0000_0000
+            ]),
+            from_each_level!([
+                0b1000_0000_0000_0000,
+                0b0000_0100_0000_0000,
+                0b0000_0000_0010_0000,
+                0b0000_0000_0000_0001
+            ]),
+            from_each_level!([
+                0b0000_0000_0000_1000,
+                0b0000_0000_0100_0000,
+                0b0000_0010_0000_0000,
+                0b0001_0000_0000_0000
+            ]),
+            from_each_level!([
+                0b0001_0000_0000_0000,
+                0b0000_0010_0000_0000,
+                0b0000_0000_0100_0000,
+                0b0000_0000_0000_1000
+            ]),
+        ];
         for _mask in line_tmpl.iter() {
             let mask = BitBoard(*_mask);
-            if mask == (*self & mask) {
-                return true
+            if mask == (self & mask) {
+                return true;
             }
         }
 
@@ -236,7 +276,7 @@ impl BitBoard {
     }
 
     /// Check there exists a lined diagonal or not
-    fn diagonal_lined(&self) -> bool {
+    fn diagonal_lined(self) -> bool {
         self.diagonal_2d_lined() || self.diagonal_3d_lined()
     }
 }

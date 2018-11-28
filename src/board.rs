@@ -80,7 +80,7 @@ impl Board {
     ///
     pub fn put(&mut self, pos: u8) {
         let color = self.side_to_move.to_index();
-        let put_pos = BitBoard::new((pos as u64) << (16 * self.beads[color].get_level_at(pos)));
+        let put_pos = BitBoard::new(u64::from(pos) << (16 * self.beads[color].get_level_at(pos)));
 
         assert_eq!(put_pos.0.count_ones(), 1);
 
@@ -122,5 +122,11 @@ impl Board {
         }
 
         BoardStatus::Ongoing
+    }
+}
+
+impl Default for Board {
+    fn default() -> Self {
+        Self::new()
     }
 }
