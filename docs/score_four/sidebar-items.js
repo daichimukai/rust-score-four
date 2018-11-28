@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EMPTY","An empty bitboard."],["NUM_COLORS","number of colors"]],"enum":[["BoardStatus","Status of a board, playing or lines are made"],["Color","Colors of players to play"]],"struct":[["BitBoard","A bit-board for Score Four"],["Board","A representation of a score four board"]]});
