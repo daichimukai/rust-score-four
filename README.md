@@ -3,6 +3,7 @@ This is a simple Score Four board library for Rust.
 
 ## Example
 ```rust
+extern crate score_four;
 use score_four::{Board, BoardStatus};
 
 let mut board = Board::new();
