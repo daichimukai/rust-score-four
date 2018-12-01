@@ -3,6 +3,7 @@
 //!
 //! ## Example
 //! ```
+//! extern crate score_four;
 //! use score_four::{Board, BoardStatus};
 //!
 //! let mut board = Board::new();
