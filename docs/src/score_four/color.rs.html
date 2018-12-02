@@ -40,8 +40,8 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">NUM_COLORS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
 
 <span class="kw">impl</span> <span class="ident">Color</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-        <span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">usize</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_index</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span> <span class="kw">as</span> <span class="ident">usize</span>
     }
 }
 

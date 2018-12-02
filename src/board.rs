@@ -78,15 +78,21 @@ impl Board {
     /// board.put(1);
     /// ```
     ///
-    pub fn put(&mut self, pos: u8) {
+    pub fn put(&mut self, pos: u8) -> Result<(u8), String> {
         let color = self.side_to_move.to_index();
-        let put_pos = BitBoard::new(u64::from(pos) << (16 * self.beads[color].get_level_at(pos)));
+        let level = self.combined.get_level_at(pos);
 
-        assert_eq!(put_pos.0.count_ones(), 1);
+        if level > 3 {
+            return Err(format!("The bar at {} already has 4 beads.", pos));
+        }
+
+        let put_pos = BitBoard::new(u64::from(pos) << (16 * level));
 
         self.beads[color] |= put_pos;
         self.combined = self.beads[0] | self.beads[1];
         self.side_to_move = !self.side_to_move;
+
+        Ok(level+1)
     }
 
     /// Put a bead at the given position
@@ -128,5 +134,24 @@ impl Board {
 impl Default for Board {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_board_put() {
+        let mut b = Board::new();
+
+        assert_eq!(b.put(1).unwrap(), 1);
+        assert_eq!(b.put(1).unwrap(), 2);
+        assert_eq!(b.put(1).unwrap(), 3);
+        assert_eq!(b.put(1).unwrap(), 4);
+
+        assert_eq!(b.side_to_move, Color::White);
+        assert!(b.put(1).is_err());
+        assert_eq!(b.side_to_move, Color::White);
     }
 }
