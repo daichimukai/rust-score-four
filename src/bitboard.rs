@@ -42,13 +42,13 @@ impl BitBoard {
     /// ```
     /// use score_four::BitBoard;
     ///
-    /// let bb = BitBoard::line_at_pos(1);
+    /// let bb = BitBoard::line_at_pos(0);
     ///
     /// assert_eq!(bb, BitBoard(281_4792_7174_3489));
     /// ```
     ///
     pub fn line_at_pos(_pos: u8) -> BitBoard {
-        let pos = u64::from(_pos);
+        let pos = 0b1 << _pos;
         BitBoard(pos | (pos << 16) | (pos << 32) | (pos << 48))
     }
 

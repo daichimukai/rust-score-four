@@ -361,13 +361,13 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// use score_four::BitBoard;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let bb = BitBoard::line_at_pos(1);</span>
+    <span class="doccomment">/// let bb = BitBoard::line_at_pos(0);</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert_eq!(bb, BitBoard(281_4792_7174_3489));</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">line_at_pos</span>(<span class="ident">_pos</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">BitBoard</span> {
-        <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">u64</span>::<span class="ident">from</span>(<span class="ident">_pos</span>);
+        <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="number">0b1</span> <span class="op">&lt;&lt;</span> <span class="ident">_pos</span>;
         <span class="ident">BitBoard</span>(<span class="ident">pos</span> <span class="op">|</span> (<span class="ident">pos</span> <span class="op">&lt;&lt;</span> <span class="number">16</span>) <span class="op">|</span> (<span class="ident">pos</span> <span class="op">&lt;&lt;</span> <span class="number">32</span>) <span class="op">|</span> (<span class="ident">pos</span> <span class="op">&lt;&lt;</span> <span class="number">48</span>))
     }
 

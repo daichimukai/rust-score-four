@@ -59,7 +59,7 @@ impl Board {
     ///
     /// assert_eq!(board.side_to_move(), Color::White);
     ///
-    /// board.put(16);
+    /// board.put(0);
     ///
     /// assert_eq!(board.side_to_move(), Color::Black);
     ///
@@ -79,6 +79,10 @@ impl Board {
     /// ```
     ///
     pub fn put(&mut self, pos: u8) -> Result<(u8), String> {
+        if pos > 15 {
+            return Err(format!("The position should be given by one of 0, 1,..., 15 (got {})", pos));
+        }
+
         let color = self.side_to_move.to_index();
         let level = self.combined.get_level_at(pos);
 
@@ -86,7 +90,8 @@ impl Board {
             return Err(format!("The bar at {} already has 4 beads.", pos));
         }
 
-        let put_pos = BitBoard::new(u64::from(pos) << (16 * level));
+        let pos_bit = 0b1 << pos;
+        let put_pos = BitBoard::new(pos_bit << (16 * level));
 
         self.beads[color] |= put_pos;
         self.combined = self.beads[0] | self.beads[1];
@@ -145,13 +150,23 @@ mod test {
     fn test_board_put() {
         let mut b = Board::new();
 
-        assert_eq!(b.put(1).unwrap(), 1);
-        assert_eq!(b.put(1).unwrap(), 2);
-        assert_eq!(b.put(1).unwrap(), 3);
-        assert_eq!(b.put(1).unwrap(), 4);
+        assert_eq!(b.put(0).unwrap(), 1);
+        assert_eq!(b.put(0).unwrap(), 2);
+        assert_eq!(b.put(0).unwrap(), 3);
+        assert_eq!(b.put(0).unwrap(), 4);
 
+        assert_eq!(b.combined().popcnt(), 4);
         assert_eq!(b.side_to_move, Color::White);
-        assert!(b.put(1).is_err());
+        assert!(b.put(0).is_err());
         assert_eq!(b.side_to_move, Color::White);
+
+        assert_eq!(b.put(1).unwrap(), 1);
+        assert_eq!(b.put(2).unwrap(), 1);
+        assert_eq!(b.put(3).unwrap(), 1);
+        assert_eq!(b.put(4).unwrap(), 1);
+
+        assert_eq!(b.combined().popcnt(), 8);
+
+        assert!(b.put(16).is_err());
     }
 }
