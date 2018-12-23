@@ -1,3 +1,4 @@
+use action::*;
 use bitboard::*;
 use color::*;
 

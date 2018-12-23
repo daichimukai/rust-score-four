@@ -12,6 +12,8 @@
 //! ```
 //!
 
+extern crate rand;
+
 mod bitboard;
 pub use bitboard::{BitBoard, EMPTY};
 
@@ -20,3 +22,12 @@ pub use color::{Color, NUM_COLORS};
 
 mod board;
 pub use board::{Board, BoardStatus};
+
+mod action;
+pub use action::Action;
+
+mod player;
+pub use player::{Player, PlayerMC, PlayerRandom};
+
+mod organizer;
+pub use organizer::Organizer;
