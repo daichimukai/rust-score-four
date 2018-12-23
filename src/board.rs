@@ -1,6 +1,6 @@
-use action::*;
-use bitboard::*;
-use color::*;
+use crate::action::*;
+use crate::bitboard::*;
+use crate::color::*;
 
 /// A representation of a score four board
 #[derive(Copy, Clone, PartialEq, Debug)]

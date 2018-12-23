@@ -1,8 +1,8 @@
 use rand::Rng;
 
-use action::Action;
-use board::{Board, BoardStatus};
-use color::{Color, Color::Black, Color::White};
+use crate::action::Action;
+use crate::board::{Board, BoardStatus};
+use crate::color::{Color, Color::Black, Color::White};
 
 /// Player Trait.
 #[allow(unused_variables)]

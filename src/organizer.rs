@@ -1,7 +1,7 @@
-use action::Action;
-use board::{Board, BoardStatus};
-use color::Color;
-use player::Player;
+use crate::action::Action;
+use crate::board::{Board, BoardStatus};
+use crate::color::Color;
+use crate::player::Player;
 
 pub struct Organizer<T1: Player, T2: Player> {
     player_white: T1,

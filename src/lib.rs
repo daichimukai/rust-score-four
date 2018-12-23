@@ -15,19 +15,19 @@
 extern crate rand;
 
 mod bitboard;
-pub use bitboard::{BitBoard, EMPTY};
+pub use crate::bitboard::{BitBoard, EMPTY};
 
 mod color;
-pub use color::{Color, NUM_COLORS};
+pub use crate::color::{Color, NUM_COLORS};
 
 mod board;
-pub use board::{Board, BoardStatus};
+pub use crate::board::{Board, BoardStatus};
 
 mod action;
-pub use action::Action;
+pub use crate::action::Action;
 
 mod player;
-pub use player::{Player, PlayerMC, PlayerRandom};
+pub use crate::player::{Player, PlayerMC, PlayerRandom};
 
 mod organizer;
-pub use organizer::Organizer;
+pub use crate::organizer::Organizer;
