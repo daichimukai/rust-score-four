@@ -80,7 +80,10 @@ impl Board {
     ///
     pub fn put(&mut self, pos: u8) -> Result<(u8), String> {
         if pos > 15 {
-            return Err(format!("The position should be given by one of 0, 1,..., 15 (got {})", pos));
+            return Err(format!(
+                "The position should be given by one of 0, 1,..., 15 (got {})",
+                pos
+            ));
         }
 
         let color = self.side_to_move.to_index();
@@ -97,7 +100,20 @@ impl Board {
         self.combined = self.beads[0] | self.beads[1];
         self.side_to_move = !self.side_to_move;
 
-        Ok(level+1)
+        Ok(level + 1)
+    }
+
+    /// Put a bead at the position given by action.
+    ///
+    /// ```
+    /// use score_four::{Board};
+    ///
+    /// let mut board = Board::new();
+    /// let actions = board.possible_actions();
+    /// board.step(actions[0]);
+    /// ```
+    pub fn step(&mut self, action: Action) -> Result<(u8), String> {
+        self.put(action.position())
     }
 
     /// Put a bead at the given position
@@ -133,6 +149,28 @@ impl Board {
         }
 
         BoardStatus::Ongoing
+    }
+
+    /// Return possible actions.
+    ///
+    /// ```
+    /// use score_four::Board;
+    ///
+    /// let mut board = Board::new();
+    /// let actions = board.possible_actions();
+    ///
+    /// assert_eq!(actions.len(), 16);
+    /// ```
+    pub fn possible_actions(&self) -> Vec<Action> {
+        let mut ret = vec![];
+        let combined = self.combined.clone();
+        for pos in 0..16 {
+            if combined.get_level_at(pos) < 4 {
+                ret.push(Action::new(pos));
+            }
+        }
+
+        ret
     }
 }
 
